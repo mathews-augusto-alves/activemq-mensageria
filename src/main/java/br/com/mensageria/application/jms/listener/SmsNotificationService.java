@@ -1,4 +1,4 @@
-package br.com.mensageria.application.jms.consumer;
+package br.com.mensageria.application.jms.listener;
 
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;

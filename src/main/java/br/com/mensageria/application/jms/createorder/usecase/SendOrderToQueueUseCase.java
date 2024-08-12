@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.mensageria.domain.entity.Order;
@@ -21,12 +22,8 @@ public class SendOrderToQueueUseCase implements IExecution<Order>{
     }
 
     @Override
-    public void execute(Order order) {
-        try {
-            String jsonOrder = objectMapper.writeValueAsString(order);
-            queueJmsTemplate.convertAndSend("orderQueue", jsonOrder);
-        } catch (Exception e) {
-            // Handle exception
-        }
+    public void execute(Order order) throws JsonProcessingException {
+        String jsonOrder = objectMapper.writeValueAsString(order);
+        queueJmsTemplate.convertAndSend("orderQueue", jsonOrder);
     }
 }

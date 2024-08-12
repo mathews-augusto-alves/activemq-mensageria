@@ -19,4 +19,9 @@ public class CompositeResult {
     public CompositeResult() {
         errors = new ArrayList<>();
     }
+
+    public CompositeResult(Boolean isValid) {
+        this.errors = new ArrayList<>();
+        this.isValid = isValid;
+    }
 }

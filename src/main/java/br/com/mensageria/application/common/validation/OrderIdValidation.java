@@ -13,11 +13,11 @@ public class OrderIdValidation implements IValidation<Order> {
     public ValidationResult validate(Order input) {
         if(input.getId() == null) {
             return ValidationResult.builder()
-                .isValid(false)
+                .isValid(Boolean.FALSE)
                 .message("Pedido inválido.")
                 .build();
         }
-        return ValidationResult.builder().isValid(true).build();
+        return ValidationResult.builder().isValid(Boolean.TRUE).build();
     }
 
 }

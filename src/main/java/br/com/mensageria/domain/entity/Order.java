@@ -1,24 +1,25 @@
 package br.com.mensageria.domain.entity;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.hibernate.cache.spi.support.AbstractReadWriteAccess.Item;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order {
 
     private String id;
-    private String product;
-    private int quantity;
-    private String customer;
-
-    public Order(String id, String product, int quantity, String customer) {
-        this.id = id;
-        this.product = product;
-        this.quantity = quantity;
-        this.customer = customer;
-    }
-
-    public Order() {
-    }
+    private String email;
+    private String content;
+    private BigDecimal amount;
+    private String currency;
+    private List<Item> items;
 }

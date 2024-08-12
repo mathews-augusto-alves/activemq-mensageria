@@ -19,12 +19,12 @@ public class CompositeValidationHandler<T> {
     }
 
     public CompositeResult handleValidation(T object) {
-        CompositeResult result = new CompositeResult();
+        CompositeResult result = new CompositeResult(Boolean.TRUE);
         for (IValidation<T> validation : validations) {
             ValidationResult validationResult = validation.validate(object);
             if (!validationResult.getIsValid()) {
                 result.getErrors().add(validationResult.getMessage());
-                result.setIsValid(false);
+                result.setIsValid(Boolean.FALSE);
             }
         }
         return result;

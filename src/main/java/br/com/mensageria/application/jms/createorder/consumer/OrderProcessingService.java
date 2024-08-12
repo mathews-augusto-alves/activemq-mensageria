@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import br.com.mensageria.application.common.carrier.NotificationSender;
 import br.com.mensageria.application.common.factory.OrderValidationFactory;
 import br.com.mensageria.domain.entity.CompositeResult;
 import br.com.mensageria.domain.entity.Order;
@@ -20,22 +21,17 @@ public class OrderProcessingService {
 
     private final ObjectMapper objectMapper;
     private final OrderValidationFactory validationFactory;
-    // private final OrderConfirmationService orderConfirmationService;
-    // private final NotificationSender notificationSender;
-    private final JmsTemplate topicJmsTemplate;
+    private final NotificationSender notificationSender;
 
     public OrderProcessingService(
             @Qualifier("topicJmsTemplate") JmsTemplate topicJmsTemplate,
             ObjectMapper objectMapper,
-            OrderValidationFactory validationFactory
-            // OrderConfirmationService orderConfirmationService,
-            // NotificationSender notificationSender
+            OrderValidationFactory validationFactory,
+            NotificationSender notificationSender
             ) {
         this.objectMapper = objectMapper;
         this.validationFactory = validationFactory;
-        // this.orderConfirmationService = orderConfirmationService;
-        // this.notificationSender = notificationSender;
-        this.topicJmsTemplate = topicJmsTemplate;
+        this.notificationSender = notificationSender;
     }
 
     @JmsListener(destination = "orderQueue", containerFactory = "queueFactory")
@@ -46,20 +42,16 @@ public class OrderProcessingService {
                     .handleValidation(order);
             if (!compositeResult.getIsValid()) {
                 logger.warn("Order validation failed: {}", order);
+                logger.info("Message removed from queue.");
                 return;
             }
 
-            confirmOrder(order);
+            this.notificationSender.sendOrderConfirmation(order);
 
         } catch (Exception e) {
+            e.printStackTrace();
             logger.error("Failed to process order: {}", jsonOrder, e);
-            // Consider rethrowing or handling the exception based on business logic.
+            logger.info("Message removed from queue.");
         }
-    }
-
-    public void confirmOrder(Order order) {
-        String notificationMessage = "Order confirmed: " + order.getId();
-        topicJmsTemplate.convertAndSend("notificationTopic", notificationMessage);
-        logger.info("Order confirmation sent for order: {}", order.getId());
     }
 }

@@ -8,4 +8,7 @@ VOLUME /tmp
 COPY target/activemq-0.0.1-SNAPSHOT.jar app.jar
 
 # Definir o ponto de entrada para o container, especificando o comando para iniciar a aplicação Java
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=local"]
+
+# Expor a porta 8084 que a aplicação vai usar
+EXPOSE 8084
